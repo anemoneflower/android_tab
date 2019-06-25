@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">android_tab_sy</string>
+    <string name="tab_content_2">TAB CONTENT 2</string>
+    <string name="tab_content_1">TAB CONTENT 1</string>
+    <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="monday">Monday</string>
+    <string name="tab_content_3">TAB CONTENT 3</string>
 </resources>
