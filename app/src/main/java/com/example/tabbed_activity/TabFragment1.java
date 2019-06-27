@@ -1,10 +1,7 @@
 package com.example.tabbed_activity;
 
-import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,12 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,7 +29,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class TabFragment1 extends Fragment {
-    private static final int PERMISSIONS_REQUEST_CODE = 100;
     private RecyclerView mRecyclerView;
     private RecyclerImageTextAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -65,23 +57,7 @@ public class TabFragment1 extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //get permission
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_CODE);
-            while (true) {
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                    initDataset();
-                    break;
-                }
-                else {
-                    
-                }
-            }
-        }
-        else {
-            initDataset();
-        }
+        initDataset();
     }
 
     private void initDataset() {
@@ -179,26 +155,6 @@ public class TabFragment1 extends Fragment {
 
         rBitmap = Bitmap.createScaledBitmap(oBitmap, (int)width, (int)height, true);
         return rBitmap;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-    String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i("Debug","Done");
-                }
-                else {
-                    Log.i("Debug","FAIL");
-                }
-                return;
-            }
-            default: {
-                Log.i("Debug","Done");
-            }
-        }
     }
 
     public JSONObject ArrListToJObj(ArrayList<ContactRecyclerItem> arrList, String name){
