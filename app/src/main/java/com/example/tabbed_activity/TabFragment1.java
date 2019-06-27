@@ -68,7 +68,13 @@ public class TabFragment1 extends Fragment {
 
         for (int i=0; i<mMyData.size(); i++){
             contactItem = mMyData.get(i);
-            Drawable drawable = new BitmapDrawable(getResources(), loadContactPhoto(getActivity().getContentResolver(), contactItem.getPersonID(), contactItem.getIconID()));
+            Drawable drawable;
+            Bitmap bm = loadContactPhoto(getActivity().getContentResolver(), contactItem.getPersonID(), contactItem.getIconID());
+            if(bm == null)
+                drawable = getResources().getDrawable(R.drawable.default_icon);
+            else {
+                drawable = new BitmapDrawable(getResources(), loadContactPhoto(getActivity().getContentResolver(), contactItem.getPersonID(), contactItem.getIconID()));
+            }
             contactItem.setIcon(drawable);
         }
                 //new ArrayList<ContactRecyclerItem>();
@@ -154,7 +160,7 @@ public class TabFragment1 extends Fragment {
             return null;
         float width = oBitmap.getWidth();
         float height = oBitmap.getHeight();
-        float resizing_size = 120;
+        float resizing_size = 200;
         Bitmap rBitmap = null;
         if (width > resizing_size){
             float mWidth = (float)(width/100);
