@@ -26,8 +26,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TabFragment1 extends Fragment {
     private static final int PERMISSIONS_REQUEST_CODE = 100;
@@ -69,32 +75,50 @@ public class TabFragment1 extends Fragment {
         for (int i=0; i<mMyData.size(); i++){
             contactItem = mMyData.get(i);
             Drawable drawable;
+            Log.d("CONTACTITEM", String.valueOf(contactItem.getPersonID()) + ", " + String.valueOf(contactItem.getIconID()) + ", " +contactItem.getName());
+
             Bitmap bm = loadContactPhoto(getActivity().getContentResolver(), contactItem.getPersonID(), contactItem.getIconID());
             if(bm == null)
                 drawable = getResources().getDrawable(R.drawable.default_icon);
             else {
-                drawable = new BitmapDrawable(getResources(), loadContactPhoto(getActivity().getContentResolver(), contactItem.getPersonID(), contactItem.getIconID()));
+                drawable = new BitmapDrawable(getResources(), bm);
             }
             contactItem.setIcon(drawable);
         }
+
+        long time = System.currentTimeMillis();
+        SimpleDateFormat currtime = new SimpleDateFormat("yyMMdd_hhmmss");
+        String t = currtime.format(new Date(time));
+
+        JSONObject jobj = ArrListToJObj(mMyData, String.valueOf(t));
     }
 
+
     public ArrayList<ContactRecyclerItem> getContactList(){
+        // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
+
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.READ_CONTACTS)) {
+
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
 
             } else {
+
                 // No explanation needed, we can request the permission.
+
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.READ_CONTACTS},
                         PERMISSIONS_REQUEST_CODE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
             }
         }
 
@@ -127,6 +151,7 @@ public class TabFragment1 extends Fragment {
     }
 
     public Bitmap loadContactPhoto(ContentResolver cr, long id, long photo_id){
+        Log.d("LOADPHOTO", String.valueOf(id) + ", " + String.valueOf(photo_id));
         Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(cr, uri);
         if(input != null)
@@ -175,7 +200,6 @@ public class TabFragment1 extends Fragment {
         rBitmap = Bitmap.createScaledBitmap(oBitmap, (int)width, (int)height, true);
         return rBitmap;
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -200,5 +224,36 @@ public class TabFragment1 extends Fragment {
             // permissions this app might request
         }
     }
+
+    public JSONObject ArrListToJObj(ArrayList<ContactRecyclerItem> arrList, String name){
+        JSONObject obj = new JSONObject();
+        try{
+            JSONArray jArray = new JSONArray();
+            for(int i=0; i<arrList.size(); i++){
+
+                ContactRecyclerItem contactItem;
+                contactItem = arrList.get(i);
+
+                JSONObject sObj = new JSONObject();
+                sObj.put("name", contactItem.getName());
+                sObj.put("phonenumber", contactItem.getPhone());
+                sObj.put("iconID", contactItem.getPhone());
+                sObj.put("pID", contactItem.getPersonID());
+                sObj.put("iconDrawable", contactItem.getIcon());
+                jArray.put(sObj);
+            }
+            obj.put("filename", name);
+            obj.put("ContactData", jArray);
+
+            System.out.println(obj.toString());
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return obj;
+    }
+
+
+
 
 }

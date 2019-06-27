@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
@@ -40,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Here, thisActivity is the current activity
+
 
     }
+
 
 }
