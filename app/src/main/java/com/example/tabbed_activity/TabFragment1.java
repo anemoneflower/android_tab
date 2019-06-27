@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -35,10 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class TabFragment1 extends Fragment {
-
     private static final int PERMISSIONS_REQUEST_CODE = 100;
-
-
     private RecyclerView mRecyclerView;
     private RecyclerImageTextAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -56,7 +54,6 @@ public class TabFragment1 extends Fragment {
         mAdapter = new RecyclerImageTextAdapter(mMyData);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
         return view;
     }
 
@@ -68,9 +65,6 @@ public class TabFragment1 extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         initDataset();
     }
 
@@ -99,24 +93,24 @@ public class TabFragment1 extends Fragment {
         JSONObject jobj = ArrListToJObj(mMyData, String.valueOf(t));
     }
 
-
     public ArrayList<ContactRecyclerItem> getContactList(){
-        // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
-
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.READ_CONTACTS)) {
-
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
 
             } else {
-
                 // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        PERMISSIONS_REQUEST_CODE);
+            }
+        }
 
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.READ_CONTACTS},
@@ -137,10 +131,8 @@ public class TabFragment1 extends Fragment {
                 ContactsContract.Contacts.PHOTO_ID,
                 ContactsContract.Contacts._ID
         };
-//        String[] selectionArgs = null;
         String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
         Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, sortOrder);
-//        LinkedHashSet<ContactRecyclerItem> hashlist = new LinkedHashSet<>();
         ArrayList<ContactRecyclerItem> contactItems = new ArrayList<>();
         if(cursor.moveToFirst()){
             do{
@@ -153,11 +145,11 @@ public class TabFragment1 extends Fragment {
                 contactItem.setPersonID(person_id);
 
                 contactItems.add(contactItem);
-//                hashlist.add(contactItem);
             }while (cursor.moveToNext());
         }
         return contactItems;
     }
+
     public Bitmap loadContactPhoto(ContentResolver cr, long id, long photo_id){
         Log.d("LOADPHOTO", String.valueOf(id) + ", " + String.valueOf(photo_id));
         Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
@@ -217,6 +209,15 @@ public class TabFragment1 extends Fragment {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 
@@ -232,36 +233,5 @@ public class TabFragment1 extends Fragment {
             // permissions this app might request
         }
     }
-
-    public JSONObject ArrListToJObj(ArrayList<ContactRecyclerItem> arrList, String name){
-        JSONObject obj = new JSONObject();
-        try{
-            JSONArray jArray = new JSONArray();
-            for(int i=0; i<arrList.size(); i++){
-
-                ContactRecyclerItem contactItem;
-                contactItem = arrList.get(i);
-
-                JSONObject sObj = new JSONObject();
-                sObj.put("name", contactItem.getName());
-                sObj.put("phonenumber", contactItem.getPhone());
-                sObj.put("iconID", contactItem.getPhone());
-                sObj.put("pID", contactItem.getPersonID());
-                sObj.put("iconDrawable", contactItem.getIcon());
-                jArray.put(sObj);
-            }
-            obj.put("filename", name);
-            obj.put("ContactData", jArray);
-
-            System.out.println(obj.toString());
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
-
-        return obj;
-    }
-
-
-
 
 }
