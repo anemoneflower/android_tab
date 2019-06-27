@@ -65,11 +65,21 @@ public class RecyclerImageTextAdapter extends RecyclerView.Adapter<RecyclerImage
         holder.name.setText(item.getName()) ;
         holder.phone.setText(item.getPhone()) ;
 
-        holder.call.setOnClickListener(new View.OnClickListener(){
+        holder.mView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 String tel = "tel:"+item.getPhone();
                 Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse(tel));
+                v.getContext().startActivity(intent);
+            }
+        });
+
+        holder.call.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String tel = "tel:"+item.getPhone();
+                Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse(tel));
                 v.getContext().startActivity(intent);
             }

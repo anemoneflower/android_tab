@@ -2,6 +2,7 @@ package com.example.tabbed_activity;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,10 +36,10 @@ public class TabFragment1 extends Fragment {
     private RecyclerImageTextAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<ContactRecyclerItem> mMyData;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_1, container, false);
+        View rootview = inflater.inflate(R.layout.activity_main, container, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler);
         mRecyclerView.setHasFixedSize(true);
@@ -46,6 +49,15 @@ public class TabFragment1 extends Fragment {
         mAdapter = new RecyclerImageTextAdapter(mMyData);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 

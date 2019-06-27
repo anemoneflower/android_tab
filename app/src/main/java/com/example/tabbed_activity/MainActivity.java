@@ -1,6 +1,7 @@
 package com.example.tabbed_activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +28,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private String[] permissions = {
-            Manifest.permission.READ_CONTACTS
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS,
+            Manifest.permission.CALL_PHONE
     };
     private static final int MULTIPLE_PERMISSIONS = 101;
 
@@ -45,15 +49,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        Log.d("TAG","ASD");
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     private boolean checkPermissions() {
@@ -76,30 +71,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showNoPermissionToastAndFinish() {
-        Toast.makeText(this, "권한 요청에 동의 해주셔야 이용 가능합니다. 설정에서 권한 허용 하시기 바랍니다.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "모든 권한 요청에 동의 해주셔야 이용 가능합니다. 설정에서 권한 허용 하시기 바랍니다.", Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        int check=0;
         switch (requestCode) {
             case MULTIPLE_PERMISSIONS: {
                 if (grantResults.length > 0) {
                     for (int i = 0; i < permissions.length; i++) {
-                        if (permissions[i].equals(this.permissions[0])) {
+                        if (permissions[i].equals(this.permissions[i])) {
                             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                                 showNoPermissionToastAndFinish();
-                            }
-                            else{
-                                initial_set();
+                                return;
                             }
                         }
                     }
                 } else {
                     showNoPermissionToastAndFinish();
+                    return;
                 }
-                return;
             }
+            initial_set();
         }
+
     }
 }
