@@ -69,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), MULTIPLE_PERMISSIONS);
             return false;
         }
+        else{
+            initial_set();
+        }
         return true;
     }
 
