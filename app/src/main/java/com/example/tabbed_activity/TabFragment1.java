@@ -1,7 +1,9 @@
 package com.example.tabbed_activity;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,8 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,9 +30,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class TabFragment1 extends Fragment {
-
-
-
+    private static final int PERMISSIONS_REQUEST_CODE = 100;
     private RecyclerView mRecyclerView;
     private RecyclerImageTextAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -45,7 +48,6 @@ public class TabFragment1 extends Fragment {
         mAdapter = new RecyclerImageTextAdapter(mMyData);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
         return view;
     }
 
@@ -57,9 +59,6 @@ public class TabFragment1 extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         initDataset();
     }
 
@@ -80,19 +79,24 @@ public class TabFragment1 extends Fragment {
         }
     }
 
-
-    public void addContact(Drawable icon, String name, String phone) {
-        ContactRecyclerItem item = new ContactRecyclerItem();
-
-        item.setIcon(icon);
-        item.setName(name);
-        item.setPhone(phone);
-
-        mMyData.add(item);
-    }
-
     public ArrayList<ContactRecyclerItem> getContactList(){
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.READ_CONTACTS)) {
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
 
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        PERMISSIONS_REQUEST_CODE);
+            }
+        }
 
 
 
@@ -103,10 +107,8 @@ public class TabFragment1 extends Fragment {
                 ContactsContract.Contacts.PHOTO_ID,
                 ContactsContract.Contacts._ID
         };
-//        String[] selectionArgs = null;
         String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
         Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, sortOrder);
-//        LinkedHashSet<ContactRecyclerItem> hashlist = new LinkedHashSet<>();
         ArrayList<ContactRecyclerItem> contactItems = new ArrayList<>();
         if(cursor.moveToFirst()){
             do{
@@ -119,11 +121,11 @@ public class TabFragment1 extends Fragment {
                 contactItem.setPersonID(person_id);
 
                 contactItems.add(contactItem);
-//                hashlist.add(contactItem);
             }while (cursor.moveToNext());
         }
         return contactItems;
     }
+
     public Bitmap loadContactPhoto(ContentResolver cr, long id, long photo_id){
         Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(cr, uri);
@@ -174,7 +176,29 @@ public class TabFragment1 extends Fragment {
         return rBitmap;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
 
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
 
 }
