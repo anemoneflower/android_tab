@@ -1,9 +1,7 @@
 package com.example.tabbed_activity;
 
-import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,8 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,6 +36,7 @@ public class TabFragment1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_1, container, false);
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -48,6 +45,7 @@ public class TabFragment1 extends Fragment {
         mAdapter = new RecyclerImageTextAdapter(mMyData);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
         return view;
     }
 
@@ -59,6 +57,9 @@ public class TabFragment1 extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         initDataset();
     }
 
@@ -77,11 +78,6 @@ public class TabFragment1 extends Fragment {
             }
             contactItem.setIcon(drawable);
         }
-                //new ArrayList<ContactRecyclerItem>();
-//        addContact(getResources().getDrawable(R.drawable.default_icon), "Kim", "01086731742") ;
-//        addContact(getResources().getDrawable(R.drawable.default_icon), "Son", "01085467389") ;
-//        addContact(getResources().getDrawable(R.drawable.default_icon), "Jane", "01046885813") ;
-
     }
 
 
