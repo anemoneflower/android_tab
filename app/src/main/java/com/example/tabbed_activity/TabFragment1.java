@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.futuremind.recyclerviewfastscroll.FastScroller;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +48,9 @@ public class TabFragment1 extends Fragment {
         mAdapter = new RecyclerImageTextAdapter(mMyData);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        FastScroller fastScroller = (FastScroller) view.findViewById(R.id.fastscroll);
+        fastScroller.setRecyclerView(mRecyclerView);
         return view;
     }
 
