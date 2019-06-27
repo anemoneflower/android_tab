@@ -1,8 +1,12 @@
 package com.example.re_image;
 
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -155,8 +160,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 if (photoFile != null) {
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI);
                     Uri providerURI = FileProvider.getUriForFile(MainActivity.this, "com.example.re_image.provider", photoFile);
-                    imageURI = providerURI;
                     //인텐트에 전달할때는 content로 구성된 uri를 보내야한다
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI);
                     startActivityForResult(intent, PICK_FROM_CAMERA);
@@ -208,9 +213,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         } else if (requestCode == PICK_FROM_CAMERA) {
+            File file = new File(mCurrentPath);
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
+                if(bitmap != null){
+                    ExifInterface exif = null;
+                    try {
+                        exif = new ExifInterface(mCurrentPath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    int exifOrientation;
+                    int exifDegree = 0;
+
+                    if (exif != null) {
+                        exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                        exifDegree = exifOrientationToDegrees(exifOrientation);
+                    }
+
+                    Bitmap rotate_bitmap = rotate(bitmap, exifDegree);
+                    File savepath = new File(mCurrentPath);
+                    FileOutputStream fos = new FileOutputStream(savepath);
+                    rotate_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    imgMain.setImageBitmap(rotate_bitmap);
+
+                    fos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             gallery_refresh();
-            //cropImage();
-            imgMain.setImageURI(imageURI);
 
         } else if (requestCode == CROP_FROM_CAMERA) {
             gallery_refresh();
@@ -226,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Uri conURI = Uri.fromFile(f);
         scan_intent.setData(conURI);
         sendBroadcast(scan_intent);
-        Toast.makeText(this, "저장에 성공하였습니다다.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "저장에 성공하였습니다.", Toast.LENGTH_SHORT).show();
     }
 
     //앨범에서 사진을 불러와 crop할때 우선 자르기만 적용.
@@ -239,8 +274,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText(this, "용량이 큰 사진의 경우 시간이 오래 걸릴 수 있습니다.", Toast.LENGTH_SHORT).show();
 
         crop_intent.putExtra("crop", "true");
-        crop_intent.putExtra("outputX", 90);
-        crop_intent.putExtra("outputY", 90);
+        //crop_intent.putExtra("outputX", 90);
+        //crop_intent.putExtra("outputY", 90);
         crop_intent.putExtra("aspectX", 1);
         crop_intent.putExtra("aspectY", 1);
         crop_intent.putExtra("scale", true);
@@ -248,5 +283,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         crop_intent.putExtra("output", albumURI);
 
         startActivityForResult(crop_intent, CROP_FROM_CAMERA);
+    }
+
+    private int exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
+
+    private Bitmap rotate(Bitmap bitmap, float degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }
