@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -31,9 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class TabFragment1 extends Fragment {
     private static final int PERMISSIONS_REQUEST_CODE = 100;
@@ -65,6 +62,29 @@ public class TabFragment1 extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //get permission
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.READ_CONTACTS)) {
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+                ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.READ_CONTACTS},
+                PERMISSIONS_REQUEST_CODE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+
         initDataset();
     }
 
@@ -85,39 +105,9 @@ public class TabFragment1 extends Fragment {
             }
             contactItem.setIcon(drawable);
         }
-
-        long time = System.currentTimeMillis();
-        SimpleDateFormat currtime = new SimpleDateFormat("yyMMdd_hhmmss");
-        String t = currtime.format(new Date(time));
-
-        JSONObject jobj = ArrListToJObj(mMyData, String.valueOf(t));
     }
 
     public ArrayList<ContactRecyclerItem> getContactList(){
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.READ_CONTACTS)) {
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.READ_CONTACTS},
-                        PERMISSIONS_REQUEST_CODE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-
-
-
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone.NUMBER,
@@ -194,9 +184,10 @@ public class TabFragment1 extends Fragment {
         rBitmap = Bitmap.createScaledBitmap(oBitmap, (int)width, (int)height, true);
         return rBitmap;
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_CODE: {
                 // If request is cancelled, the result arrays are empty.

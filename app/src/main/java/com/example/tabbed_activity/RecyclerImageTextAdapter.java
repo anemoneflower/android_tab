@@ -20,9 +20,12 @@ public class RecyclerImageTextAdapter extends RecyclerView.Adapter<RecyclerImage
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView icon ;
+        ImageView call ;
+        ImageView msg ;
         TextView name ;
         TextView phone ;
         View mView;
+
         ViewHolder(View itemView) {
             super(itemView) ;
             // 뷰 객체에 대한 참조. (hold strong reference)
@@ -30,6 +33,8 @@ public class RecyclerImageTextAdapter extends RecyclerView.Adapter<RecyclerImage
             icon = itemView.findViewById(R.id.icon);
             name = itemView.findViewById(R.id.name) ;
             phone = itemView.findViewById(R.id.phone) ;
+            call = itemView.findViewById(R.id.call);
+            msg = itemView.findViewById(R.id.msg);
         }
     }
 
@@ -60,7 +65,7 @@ public class RecyclerImageTextAdapter extends RecyclerView.Adapter<RecyclerImage
         holder.name.setText(item.getName()) ;
         holder.phone.setText(item.getPhone()) ;
 
-        holder.mView.setOnClickListener(new View.OnClickListener(){
+        holder.call.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 String tel = "tel:"+item.getPhone();
@@ -69,6 +74,17 @@ public class RecyclerImageTextAdapter extends RecyclerView.Adapter<RecyclerImage
                 v.getContext().startActivity(intent);
             }
         });
+
+        holder.msg.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String tel = "smsto:"+item.getPhone();
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse(tel));
+                v.getContext().startActivity(intent);
+            }
+        });
+
     }
 
     // getItemCount() - 전체 데이터 갯수 리턴.
