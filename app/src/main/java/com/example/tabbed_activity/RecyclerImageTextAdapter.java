@@ -13,9 +13,12 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
+
 import java.util.ArrayList;
 
-public class RecyclerImageTextAdapter extends RecyclerView.Adapter<RecyclerImageTextAdapter.ViewHolder> {
+public class RecyclerImageTextAdapter extends RecyclerView
+        .Adapter<RecyclerImageTextAdapter.ViewHolder> implements SectionTitleProvider {
     private ArrayList<ContactRecyclerItem> mData = null ;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -101,5 +104,11 @@ public class RecyclerImageTextAdapter extends RecyclerView.Adapter<RecyclerImage
     @Override
     public int getItemCount() {
         return mData.size() ;
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        //this String will be shown in a bubble for specified position
+        return mData.get(position).getName().substring(0, 1);
     }
 }

@@ -22,7 +22,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +52,11 @@ public class TabFragment1 extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        FastScroller fastScroller = (FastScroller) view.findViewById(R.id.fastscroll);
+        fastScroller.setRecyclerView(mRecyclerView);
+
         FloatingActionButton fab = view.findViewById(R.id.fab);
+        Log.d("TAG","ASD");
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,6 +64,7 @@ public class TabFragment1 extends Fragment {
                 startActivity(intent);
             }
         });
+//        floatingActionBtn(view);
         return view;
     }
 
@@ -70,7 +77,20 @@ public class TabFragment1 extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initDataset();
+
     }
+
+//    private void floatingActionBtn(View view){
+//        FloatingActionButton fab = view.findViewById(R.id.fab);
+//        Log.d("TAG","ASD");
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
+//    }
 
     private void initDataset() {
         mMyData = getContactList();
