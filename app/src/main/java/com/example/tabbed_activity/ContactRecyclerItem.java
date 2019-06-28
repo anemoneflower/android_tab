@@ -2,28 +2,54 @@ package com.example.tabbed_activity;
 
 import android.graphics.drawable.Drawable;
 
-public class ContactRecyclerItem {
-    private Drawable iconDrawable ;
-    private String nameStr ;
-    private String phoneStr ;
+import java.io.Serializable;
+
+public class ContactRecyclerItem implements Serializable {
+    private Drawable iconDrawable;
+    private String nameStr;
+    private String phoneStr;
+    private long iconID, personID;
+
+    public ContactRecyclerItem() {
+    }
 
     public void setIcon(Drawable icon) {
-        iconDrawable = icon ;
+        iconDrawable = icon;
     }
+
+    public void setIconID(long id){iconID = id;}
+
     public void setName(String name) {
-        nameStr = name ;
+        nameStr = name;
     }
+
+    public void setPersonID(long id){personID = id;}
+
     public void setPhone(String desc) {
-        phoneStr = desc ;
+        phoneStr = desc;
     }
 
     public Drawable getIcon() {
-        return this.iconDrawable ;
+        return this.iconDrawable;
     }
+
     public String getName() {
-        return this.nameStr ;
+        return this.nameStr;
     }
+
     public String getPhone() {
-        return this.phoneStr ;
+        return this.phoneStr;
+    }
+    public long getIconID(){
+        return this.iconID;
+    }
+
+    public long getPersonID(){
+        return this.personID;
+    }
+
+    @Override
+    public String toString(){
+        return this.phoneStr;
     }
 }

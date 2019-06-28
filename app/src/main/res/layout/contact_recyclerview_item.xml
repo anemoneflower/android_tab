@@ -3,16 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/module"
+    android:background="@drawable/contact_module"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/icon"/>
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20px"
+    android:layout_marginBottom="10px"
+    android:layout_marginLeft="30px"
+    android:layout_marginRight="30px"
+    >
 
     <TextView
         android:id="@+id/name"
@@ -20,9 +19,10 @@
         android:layout_height="wrap_content"
         android:textColor="#000000"
         android:textSize="24sp"
-        app:layout_constraintLeft_toRightOf="@id/icon"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <TextView
         android:layout_width="0dp"
@@ -30,7 +30,50 @@
         android:id="@+id/phone"
         android:textSize="16sp"
         android:textColor="#666666"
-        app:layout_constraintLeft_toRightOf="@id/icon"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name" />
+
+    <ImageView
+        android:id="@+id/call"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src = "@drawable/call_default"
+        android:contentDescription="@string/icon"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/msg"
+        />
+
+    <ImageView
+        android:id="@+id/msg"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src = "@drawable/msg_default"
+        android:contentDescription="@string/icon"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/icon"
+        />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/icon"
+        android:foreground="@drawable/rounded_fg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
