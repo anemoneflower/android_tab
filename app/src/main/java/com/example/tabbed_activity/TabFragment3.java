@@ -1,6 +1,10 @@
 package com.example.tabbed_activity;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,13 +24,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
+
 public class TabFragment3 extends Fragment {
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_3, container, false);
-        view.findViewById(R.id.buttonCreateWidget).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.overlay_on_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("DEBUGDEBUGDEBUG", "DEBUGDEBUGDEBUG");
@@ -45,6 +51,42 @@ public class TabFragment3 extends Fragment {
                 }
             }
         });
+
+        view.findViewById(R.id.setting_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+                mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                List<ResolveInfo> pkgAppsList = getContext().getPackageManager().queryIntentActivities( mainIntent, 0);
+//                try
+//                {
+//                    Drawable icon = getActivity().getPackageManager().getApplicationIcon("com.example.testnotification");
+//                    imageView.setImageDrawable(icon);
+//                }
+//                catch (PackageManager.NameNotFoundException e)
+//                {
+//                    e.printStackTrace();
+//                }
+
+
+                for (ResolveInfo resolveInfo : pkgAppsList) {
+                    Log.d("DEBUG DEBUG DEBUG", "Installed package :" + resolveInfo.activityInfo.packageName);
+
+                    //int stringId = resolveInfo.activityInfo.labelRes;
+                    //Log.d("DEBUG DEBUG DEBUG", "Installed appname :" +
+                    //        (stringId==0 ?  getActivity().getApplicationInfo().nonLocalizedLabel.toString(): getActivity().getString(stringId))
+                    //);
+
+                    if(resolveInfo.activityInfo.packageName.equals("com.google.android.music")){
+                        Log.d("MUSIC", "music access");
+                        Intent intent = getContext().getPackageManager().getLaunchIntentForPackage("com.google.android.music");
+                        startActivity(intent);
+                    }
+                    //Log.d(TAG, "Source dir : " + packageInfo.sourceDir);
+                }
+            }
+        });
+
         return view;
     }
 
