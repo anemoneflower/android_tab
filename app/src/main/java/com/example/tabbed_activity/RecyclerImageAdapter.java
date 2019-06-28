@@ -1,17 +1,14 @@
 package com.example.tabbed_activity;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class RecyclerImageAdapter extends RecyclerView.Adapter<RecyclerImageAdapter.ViewHolder> {
@@ -24,7 +21,6 @@ public class RecyclerImageAdapter extends RecyclerView.Adapter<RecyclerImageAdap
             super(itemView) ;
             // 뷰 객체에 대한 참조. (hold strong reference)
             photo = itemView.findViewById(R.id.photo);
-            //desc = itemView.findViewById(R.id.desc) ;
         }
     }
 
