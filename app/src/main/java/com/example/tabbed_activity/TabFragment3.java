@@ -105,13 +105,10 @@ public class TabFragment3 extends Fragment {
         view.findViewById(R.id.overlay_on_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("DEBUGDEBUGDEBUG", "DEBUGDEBUGDEBUG");
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    Log.d("DEBUGDEBUGDEBUG", "IF");
                     getActivity().startService(new Intent(getContext(), FloatingViewService.class));
                     getActivity().finish();
                 } else if (Settings.canDrawOverlays(getActivity())) {
-                    Log.d("DEBUGDEBUGDEBUG", "ELSEIF");
                     getActivity().startService(new Intent(getContext(), FloatingViewService.class));
                     getActivity().finish();
                 }

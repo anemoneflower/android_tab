@@ -37,7 +37,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 TabFragment1 tab1 = new TabFragment1();
                 return tab1;
             case 1:
-                TabFragment3 tab2 = new TabFragment3();
+                TabFragment2 tab2 = new TabFragment2();
                 return tab2;
                 //TabFragment2 tab2 = new TabFragment2();
                 //return tab2;

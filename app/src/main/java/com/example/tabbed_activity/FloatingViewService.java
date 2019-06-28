@@ -24,7 +24,8 @@ public class FloatingViewService extends Service implements View.OnClickListener
     private View mFloatingView;
     private View collapsedView;
     private View expandedView;
-    Button button1;
+    private Button button1;
+    private Boolean ismoved = false;
 
     public FloatingViewService() {
     }
@@ -74,7 +75,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
             private int initialY;
             private float initialTouchX;
             private float initialTouchY;
-            private Boolean ismoved = false;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -92,9 +92,10 @@ public class FloatingViewService extends Service implements View.OnClickListener
                     case MotionEvent.ACTION_UP:
                         //when the drag is ended switching the state of the widget
                         if(!ismoved) {
-                            Log.d("FLOATVIEW", "ismoved true");
                             collapsedView.setVisibility(View.GONE);
                             expandedView.setVisibility(View.VISIBLE);
+                        }
+                        else{
                             ismoved = false;
                         }
 
@@ -104,8 +105,12 @@ public class FloatingViewService extends Service implements View.OnClickListener
                         //this code is helping the widget to move around the screen with fingers
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY + (int) (event.getRawY() - initialTouchY);
-                        mWindowManager.updateViewLayout(mFloatingView, params);
-                        ismoved = true;
+                        float dx = Math.abs(params.x - initialX);
+                        float dy = Math.abs(params.y - initialY);
+                        if(dx > 10 || dy > 10) {
+                            mWindowManager.updateViewLayout(mFloatingView, params);
+                            ismoved = true;
+                        }
                         return true;
                 }
                 return false;
@@ -122,11 +127,12 @@ public class FloatingViewService extends Service implements View.OnClickListener
 
                     String id=pref.getString("1",null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
 
-                    System.out.println("데이터저장값: "+id);
                     Intent myintent = getPackageManager().getLaunchIntentForPackage(id);
 
                     startActivity(myintent);
 
+                    collapsedView.setVisibility(View.VISIBLE);
+                    expandedView.setVisibility(View.GONE);
                     break;
             }
         }
