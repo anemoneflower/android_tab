@@ -26,10 +26,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
-            android:name=".FloatingViewService"
+            android:name="com.example.tabbed_activity.FloatingViewService"
             android:enabled="true"
             android:exported="false" />
+
     </application>
 
 </manifest>
