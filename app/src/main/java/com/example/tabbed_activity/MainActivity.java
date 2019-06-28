@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkPermissions();
-
     }
 
     protected void initial_set(){
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-
     }
 
     private boolean checkPermissions() {
@@ -97,6 +95,5 @@ public class MainActivity extends AppCompatActivity {
             }
             initial_set();
         }
-
     }
 }

@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,41 +32,19 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+
 public class TabFragment1 extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerImageTextAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<ContactRecyclerItem> mMyData;
+    private View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_1, container, false);
-        View rootview = inflater.inflate(R.layout.activity_main, container, false);
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.scrollToPosition(0);
-        mAdapter = new RecyclerImageTextAdapter(mMyData);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        FastScroller fastScroller = (FastScroller) view.findViewById(R.id.fastscroll);
-        fastScroller.setRecyclerView(mRecyclerView);
-
-        FloatingActionButton fab = view.findViewById(R.id.fab);
-        Log.d("TAG","ASD");
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI);
-                startActivity(intent);
-            }
-        });
-//        floatingActionBtn(view);
+        Log.d("DEBUGDEBUG", "OCV");
+        view = inflater.inflate(R.layout.fragment_1, container, false);
         return view;
     }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -77,22 +54,33 @@ public class TabFragment1 extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initDataset();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        initDataset();
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.scrollToPosition(0);
+        mAdapter = new RecyclerImageTextAdapter(mMyData);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        FastScroller fastScroller = (FastScroller) view.findViewById(R.id.fastscroll);
+        fastScroller.setRecyclerView(mRecyclerView);
 
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI);
+                startActivity(intent);
+            }
+        });
     }
 
-//    private void floatingActionBtn(View view){
-//        FloatingActionButton fab = view.findViewById(R.id.fab);
-//        Log.d("TAG","ASD");
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-//    }
-
-    private void initDataset() {
+    public void initDataset() {
         mMyData = getContactList();
         ContactRecyclerItem contactItem;
 
