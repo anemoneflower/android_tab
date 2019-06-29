@@ -44,8 +44,6 @@ public class TabFragment3 extends Fragment {
     List<ResolveInfo> pkgAppsList;
     PackageManager pm;
 
-    private Spinner spinner0;
-
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
@@ -67,6 +65,8 @@ public class TabFragment3 extends Fragment {
         pkgAppsList = getContext().getPackageManager().queryIntentActivities( mainIntent, 0);
         pm = getContext().getPackageManager();
 
+        appNameList.add("퀵메뉴에 지정할 어플리케이션을 선택하세요");
+        appPackageNameList.add(null);
         for (ResolveInfo resolveInfo : pkgAppsList) {
             //package name
             String PackageName = resolveInfo.activityInfo.packageName;
@@ -83,25 +83,7 @@ public class TabFragment3 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_3, container, false);
-
-        spinner0 = (Spinner) view.findViewById(R.id.spinner0);
-        spinner0.setAdapter(arrayAdapter);
-        spinner0.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                editor.putString("1", appPackageNameList.get(i));
-                editor.putInt("1_pos", i);
-                editor.putString("1_name", appNameList.get(i));
-                editor.apply();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-        String prev = pref.getString("1",null);
-        if(prev != null){
-            spinner0.setSelection(pref.getInt("1_pos", -1));
-        }
+        spinner_initialize();
 
         view.findViewById(R.id.overlay_on_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +103,40 @@ public class TabFragment3 extends Fragment {
         });
 
         return view;
+    }
+
+    public void spinner_initialize(){
+        ArrayList<Spinner> spinner_list = new ArrayList<>();
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner0));
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner1));
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner2));
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner3));
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner4));
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner5));
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner6));
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner7));
+        spinner_list.add((Spinner) view.findViewById(R.id.spinner8));
+
+        for(Spinner spinner : spinner_list){
+            final int index = spinner_list.indexOf(spinner)+1;
+            spinner.setAdapter(arrayAdapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    editor.putString( Integer.toString(index), appPackageNameList.get(i));
+                    editor.putInt(index+"_pos", i);
+                    editor.putString(index+"_name", appNameList.get(i));
+                    editor.apply();
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+            String prev = pref.getString(Integer.toString(index),null);
+            if(prev != null) {
+                spinner.setSelection(pref.getInt(index+"_pos", -1));
+            }
+        }
     }
 
     private void askPermission() {
