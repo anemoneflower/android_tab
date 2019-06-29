@@ -27,6 +27,8 @@ public class FloatingViewService extends Service implements View.OnClickListener
     private Button button1;
     private Boolean ismoved = false;
 
+    SharedPreferences pref;
+
     public FloatingViewService() {
     }
 
@@ -41,10 +43,11 @@ public class FloatingViewService extends Service implements View.OnClickListener
     public void onCreate() {
         super.onCreate();
 
-
         //getting the widget layout from xml using layout inflater
+        pref = getSharedPreferences("pref", MODE_PRIVATE);
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null);
         button1 = (Button) mFloatingView.findViewById(R.id.button1);
+        button1.setText(pref.getString("1_name", null));
         button1.setOnClickListener(listener);
 
         //setting the layout parameters
@@ -78,9 +81,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
-
-
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         initialX = params.x;
@@ -122,11 +122,7 @@ public class FloatingViewService extends Service implements View.OnClickListener
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.button1:
-                    SharedPreferences pref;
-                    pref = getSharedPreferences("pref", MODE_PRIVATE);
-
                     String id=pref.getString("1",null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
-
                     Intent myintent = getPackageManager().getLaunchIntentForPackage(id);
 
                     startActivity(myintent);

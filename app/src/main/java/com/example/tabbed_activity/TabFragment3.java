@@ -91,6 +91,7 @@ public class TabFragment3 extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 editor.putString("1", appPackageNameList.get(i));
                 editor.putInt("1_pos", i);
+                editor.putString("1_name", appNameList.get(i));
                 editor.apply();
             }
             @Override
