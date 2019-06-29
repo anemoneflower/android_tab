@@ -39,34 +39,170 @@
             android:id="@+id/layoutExpanded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#a0c3d7"
-            android:orientation="horizontal"
+            android:background="@drawable/floating_round_corner"
+            android:orientation="vertical"
             android:padding="8dp"
             android:visibility="gone">
 
-            <LinearLayout
-                android:id="@+id/buttonSimplifiedCoding"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="10dp"
+                android:text="QUICK MENU"
+                android:background="@drawable/quick_menu_bg"
+                android:textAlignment="center"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <!--Row1-->
+                <TableRow>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button1"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview1"
+                            style="@style/TextViewStyle"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button2"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview2"
+                            style="@style/TextViewStyle"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button3"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview3"
+                            style="@style/TextViewStyle"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingTop="15dp"
-                    android:text="QUICK MENU"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                    android:textColor="#ffffff"
-                    android:textStyle="bold" />
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button1"
-                    android:text="Button Example" />
-            </LinearLayout>
+                    </LinearLayout>
+                </TableRow>
+                <!--Row2-->
+                <TableRow>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button4"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview4"
+                            style="@style/TextViewStyle"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button5"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview5"
+                            style="@style/TextViewStyle"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button6"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview6"
+                            style="@style/TextViewStyle"/>
+
+                    </LinearLayout>
+                </TableRow>
+                <!--Row3-->
+                <TableRow>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button7"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview7"
+                            style="@style/TextViewStyle"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button8"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview8"
+                            style="@style/TextViewStyle"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/button9"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/icon_non"/>
+                        <TextView
+                            android:id="@+id/buttontextview9"
+                            style="@style/TextViewStyle"/>
+
+                    </LinearLayout>
+                </TableRow>
+            </TableLayout>
         </LinearLayout>
     </RelativeLayout>
 </FrameLayout>
