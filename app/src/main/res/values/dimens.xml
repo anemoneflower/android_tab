@@ -6,6 +6,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="cam_margin">16dp</dimen>
     <dimen name="alb_margin">16dp</dimen>
+    <dimen name="del_margin">16dp</dimen>
     <dimen name="res_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 </resources>
