@@ -5,7 +5,6 @@ import android.graphics.Matrix;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,12 +14,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,6 +94,7 @@ public class TabFragment2 extends Fragment {
 
         FloatingActionButton btnCamera = view.findViewById(R.id.btn_camera);
         FloatingActionButton btnAlbum = view.findViewById(R.id.btn_album);
+        FloatingActionButton btnReset = view.findViewById(R.id.btn_reset);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +106,12 @@ public class TabFragment2 extends Fragment {
             @Override
             public void onClick(View view) {
                 goToAlbum();
+            }
+        });
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetGallery();
             }
         });
 
@@ -292,7 +294,7 @@ public class TabFragment2 extends Fragment {
         Uri conURI = Uri.fromFile(f);
         scan_intent.setData(conURI);
         getActivity().sendBroadcast(scan_intent);
-        Toast.makeText(getContext(), "저장에 성공하였습니다.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "갤러리 수정 완료.", Toast.LENGTH_SHORT).show();
     }
 
     //앨범에서 사진을 불러와 crop할때 자르기.
@@ -377,8 +379,22 @@ public class TabFragment2 extends Fragment {
     private void getDelete(String getPath){
         File file = new File(getPath);
         file.delete();
+        mCurrentPath = getPath;
+        gallery_refresh();
         Toast.makeText(getContext(),"사진 삭제 완료", Toast.LENGTH_SHORT).show();
         onResume();
+    }
+
+    private void resetGallery(){
+        File file;
+        for(int i = 0; i < mMyData.size(); i++){
+            String filePath = mMyData.get(i).getitemPath();
+            file = new File(filePath);
+            file.delete();
+            mCurrentPath = filePath;
+            gallery_refresh();
+        }
+        Toast.makeText(getContext(),"갤러리 초기화", Toast.LENGTH_SHORT).show();
     }
 
     private String getName(String getPath){
