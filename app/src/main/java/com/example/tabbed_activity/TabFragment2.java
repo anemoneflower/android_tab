@@ -344,17 +344,22 @@ public class TabFragment2 extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btn_delete.setVisibility(VISIBLE);
-                btn_delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getDelete(getPath);
-                        imageView.setVisibility(View.GONE);
-                        textView.setVisibility(View.GONE);
-                        btn_back.setVisibility(View.GONE);
-                        btn_delete.setVisibility(View.GONE);
-                    }
-                });
+                if(btn_delete.getVisibility() == VISIBLE){
+                    btn_delete.setVisibility(View.GONE);
+                }
+                else {
+                    btn_delete.setVisibility(VISIBLE);
+                    btn_delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getDelete(getPath);
+                            imageView.setVisibility(View.GONE);
+                            textView.setVisibility(View.GONE);
+                            btn_back.setVisibility(View.GONE);
+                            btn_delete.setVisibility(View.GONE);
+                        }
+                    });
+                }
             }
         });
 
@@ -364,6 +369,7 @@ public class TabFragment2 extends Fragment {
                 imageView.setVisibility(View.GONE);
                 textView.setVisibility(View.GONE);
                 btn_back.setVisibility(View.GONE);
+                btn_delete.setVisibility(View.GONE);
             }
         });
     }
