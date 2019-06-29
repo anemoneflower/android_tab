@@ -48,6 +48,7 @@ public class TabFragment2 extends Fragment {
     private TextView textView;
     private Button btn_back;
     private Button btn_delete;
+    private Button btn_check;
 
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_ALBUM = 2;
@@ -111,7 +112,19 @@ public class TabFragment2 extends Fragment {
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resetGallery();
+                if(btn_check.getVisibility() == VISIBLE){
+                    btn_check.setVisibility(View.GONE);
+                    btn_check.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            btn_check.setVisibility(View.GONE);
+                            resetGallery();
+                        }
+                    });
+                }
+                else{
+                    btn_check.setVisibility(VISIBLE);
+                }
             }
         });
 
@@ -149,11 +162,13 @@ public class TabFragment2 extends Fragment {
         textView = (TextView) view.findViewById(R.id.name_photo);
         btn_back = (Button) view.findViewById(R.id.btn_back);
         btn_delete = (Button) view.findViewById(R.id.btn_delete);
+        btn_check = (Button) view.findViewById(R.id.btn_check);
 
         imageView.setVisibility(View.GONE);
         textView.setVisibility(View.GONE);
         btn_back.setVisibility(View.GONE);
         btn_delete.setVisibility(View.GONE);
+        btn_check.setVisibility(View.GONE);
     }
 
     public void initDataset() {
@@ -294,7 +309,6 @@ public class TabFragment2 extends Fragment {
         Uri conURI = Uri.fromFile(f);
         scan_intent.setData(conURI);
         getActivity().sendBroadcast(scan_intent);
-        Toast.makeText(getContext(), "갤러리 수정 완료.", Toast.LENGTH_SHORT).show();
     }
 
     //앨범에서 사진을 불러와 crop할때 자르기.
@@ -395,6 +409,7 @@ public class TabFragment2 extends Fragment {
             gallery_refresh();
         }
         Toast.makeText(getContext(),"갤러리 초기화", Toast.LENGTH_SHORT).show();
+        onResume();
     }
 
     private String getName(String getPath){
