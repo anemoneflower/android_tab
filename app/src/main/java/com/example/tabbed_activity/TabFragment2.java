@@ -9,11 +9,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -30,12 +36,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static android.view.View.VISIBLE;
+
 public class TabFragment2 extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerImageAdapter mAdapter;
     private GridLayoutManager mGridLayoutManager;
     private ArrayList<AlbumRecyclerItem> mMyData;
     private View view;
+    private ImageView imageView;
+    private TextView textView;
+    private Button btn_back;
+    private Button btn_delete;
 
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_ALBUM = 2;
@@ -82,6 +94,7 @@ public class TabFragment2 extends Fragment {
 
         FloatingActionButton btnCamera = view.findViewById(R.id.btn_camera);
         FloatingActionButton btnAlbum = view.findViewById(R.id.btn_album);
+        FloatingActionButton btnReset = view.findViewById(R.id.btn_reset);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +108,52 @@ public class TabFragment2 extends Fragment {
                 goToAlbum();
             }
         });
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetGallery();
+            }
+        });
+
+
+        final GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener()
+        {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e)
+            {
+                return true;
+            }
+        });
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                View child = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+                if(child!=null && gestureDetector.onTouchEvent(e)){
+                    /*터치하고 뗐을때*/
+                    int position = mRecyclerView.getChildLayoutPosition(child);
+                    getInfo(position);
+                }
+                return false;
+            }
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            }
+        });
+
+        imageView = (ImageView) view.findViewById(R.id.select_photo);
+        textView = (TextView) view.findViewById(R.id.name_photo);
+        btn_back = (Button) view.findViewById(R.id.btn_back);
+        btn_delete = (Button) view.findViewById(R.id.btn_delete);
+
+        imageView.setVisibility(View.GONE);
+        textView.setVisibility(View.GONE);
+        btn_back.setVisibility(View.GONE);
+        btn_delete.setVisibility(View.GONE);
     }
 
     public void initDataset() {
@@ -235,10 +294,10 @@ public class TabFragment2 extends Fragment {
         Uri conURI = Uri.fromFile(f);
         scan_intent.setData(conURI);
         getActivity().sendBroadcast(scan_intent);
-        Toast.makeText(getContext(), "저장에 성공하였습니다.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "갤러리 수정 완료.", Toast.LENGTH_SHORT).show();
     }
 
-    //앨범에서 사진을 불러와 crop할때 자르기만 적용.
+    //앨범에서 사진을 불러와 crop할때 자르기.
     public void cropImage() {
         Intent crop_intent = new Intent("com.android.camera.action.CROP");
         crop_intent.setDataAndType(photoURI, "image/*");
@@ -274,5 +333,73 @@ public class TabFragment2 extends Fragment {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
+    private void getInfo(int position){
+        final String getPath = mMyData.get(position).getitemPath();
+
+        imageView.setVisibility(VISIBLE);
+        textView.setVisibility(VISIBLE);
+        btn_back.setVisibility(VISIBLE);
+
+        imageView.setImageURI(Uri.parse((getPath)));
+        textView.setText(getName(getPath));
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(btn_delete.getVisibility() == VISIBLE){
+                    btn_delete.setVisibility(View.GONE);
+                }
+                else {
+                    btn_delete.setVisibility(VISIBLE);
+                    btn_delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getDelete(getPath);
+                            imageView.setVisibility(View.GONE);
+                            textView.setVisibility(View.GONE);
+                            btn_back.setVisibility(View.GONE);
+                            btn_delete.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            }
+        });
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageView.setVisibility(View.GONE);
+                textView.setVisibility(View.GONE);
+                btn_back.setVisibility(View.GONE);
+                btn_delete.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getDelete(String getPath){
+        File file = new File(getPath);
+        file.delete();
+        mCurrentPath = getPath;
+        gallery_refresh();
+        Toast.makeText(getContext(),"사진 삭제 완료", Toast.LENGTH_SHORT).show();
+        onResume();
+    }
+
+    private void resetGallery(){
+        File file;
+        for(int i = 0; i < mMyData.size(); i++){
+            String filePath = mMyData.get(i).getitemPath();
+            file = new File(filePath);
+            file.delete();
+            mCurrentPath = filePath;
+            gallery_refresh();
+        }
+        Toast.makeText(getContext(),"갤러리 초기화", Toast.LENGTH_SHORT).show();
+    }
+
+    private String getName(String getPath){
+        String tmp[] = getPath.split("/");
+        return tmp[tmp.length - 1];
+    }
 }
 
