@@ -220,7 +220,6 @@ public class TabFragment2 extends Fragment {
                     e.printStackTrace();
                 }
                 if (photoFile != null) {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI);
                     Uri providerURI = FileProvider.getUriForFile(getContext(), "com.example.tabbed_activity.provider", photoFile);
                     //인텐트에 전달할때는 content로 구성된 uri를 보내야한다
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI);
