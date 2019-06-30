@@ -71,17 +71,16 @@ public class TabFragment2 extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-
         /* 갤러리에 폴더 추가  */
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "/madcamp");
         if (!storageDir.exists()) {
             storageDir.mkdir();
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
 
         initDataset();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler);
