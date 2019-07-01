@@ -1,12 +1,10 @@
 package com.example.tabbed_activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,8 +39,6 @@ public class TabFragment3 extends Fragment {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
-//    private String expanded_bgcolor = String.valueOf(Color.parseColor("#F5F5ABC3"));
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -75,8 +71,6 @@ public class TabFragment3 extends Fragment {
             }
         }
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -129,11 +123,8 @@ public class TabFragment3 extends Fragment {
 
             }
         });
-
-
         return view;
     }
-
 
     public void spinner_initialize(){
         ArrayList<Spinner> spinner_list = new ArrayList<>();

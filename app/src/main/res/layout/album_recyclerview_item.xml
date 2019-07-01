@@ -10,7 +10,7 @@
     android:layout_marginTop="20px"
     android:layout_marginRight="10px"
     android:layout_marginBottom="10px"
-    android:background="@drawable/contact_module">
+    android:background="@drawable/tab1_contact_module">
 
     <ImageView
         android:id="@+id/photo"

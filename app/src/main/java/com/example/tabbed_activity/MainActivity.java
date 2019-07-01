@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        int check=0;
         switch (requestCode) {
             case MULTIPLE_PERMISSIONS: {
                 if (grantResults.length > 0) {
