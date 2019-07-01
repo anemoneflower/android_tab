@@ -42,13 +42,17 @@ public class TabFragment2 extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerImageAdapter mAdapter;
     private GridLayoutManager mGridLayoutManager;
-    private ArrayList<AlbumRecyclerItem> mMyData;
+    private ArrayList<AlbumRecyclerItem> mMyData = new ArrayList<>();
     private View view;
     private ImageView imageView;
-    private TextView textView;
+    //private TextView textView;
     private Button btn_back;
     private Button btn_delete;
     private Button btn_check;
+
+    FloatingActionButton btnCamera;
+    FloatingActionButton btnAlbum;
+    FloatingActionButton btnReset;
 
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_ALBUM = 2;
@@ -60,32 +64,11 @@ public class TabFragment2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_2, container, false);
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        /* 갤러리에 폴더 추가  */
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "/madcamp");
-        if (!storageDir.exists()) {
-            storageDir.mkdir();
-        }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
 
         initDataset();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler);
         mRecyclerView.setHasFixedSize(true);
-        int numofCol = 2;
+        int numofCol = 4;
         mGridLayoutManager = new GridLayoutManager(getActivity(), numofCol);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.scrollToPosition(0);
@@ -93,9 +76,9 @@ public class TabFragment2 extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        FloatingActionButton btnCamera = view.findViewById(R.id.btn_camera);
-        FloatingActionButton btnAlbum = view.findViewById(R.id.btn_album);
-        FloatingActionButton btnReset = view.findViewById(R.id.btn_reset);
+        btnCamera = view.findViewById(R.id.btn_camera);
+        btnAlbum = view.findViewById(R.id.btn_album);
+        btnReset = view.findViewById(R.id.btn_reset);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +133,9 @@ public class TabFragment2 extends Fragment {
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
                 View child = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
                 if(child!=null && gestureDetector.onTouchEvent(e)){
+                    btnAlbum.hide();
+                    btnCamera.hide();
+                    btnReset.hide();
                     /*터치하고 뗐을때*/
                     int position = mRecyclerView.getChildLayoutPosition(child);
                     getInfo(position);
@@ -166,32 +152,46 @@ public class TabFragment2 extends Fragment {
         });
 
         imageView = (ImageView) view.findViewById(R.id.select_photo);
-        textView = (TextView) view.findViewById(R.id.name_photo);
+        //textView = (TextView) view.findViewById(R.id.name_photo);
         btn_back = (Button) view.findViewById(R.id.btn_back);
         btn_delete = (Button) view.findViewById(R.id.btn_delete);
         btn_check = (Button) view.findViewById(R.id.btn_check);
 
         imageView.setVisibility(View.GONE);
-        textView.setVisibility(View.GONE);
+        //textView.setVisibility(View.GONE);
         btn_back.setVisibility(View.GONE);
         btn_delete.setVisibility(View.GONE);
         btn_check.setVisibility(View.GONE);
+
+        //mRecyclerView.getRecycledViewPool().setMaxRecycledViews(mRecyclerView.ViewHolder.,25);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        /* 갤러리에 폴더 추가  */
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "/madcamp");
+        if (!storageDir.exists()) {
+            storageDir.mkdir();
+        }
     }
 
     public void initDataset() {
-        mMyData = new ArrayList<>();
-        addPhoto();
-    }
+       mMyData.clear();
+       String GalleryDir = getDirectoryPath();
+       File fileDir = new File(GalleryDir);
+       String[] imageFileNameArr = fileDir.list();
 
-    public void addPhoto() {
-        String GalleryDir = getDirectoryPath();
-        File fileDir = new File(GalleryDir);
-        String[] imageFileNameArr = fileDir.list();
-
-        for(int i = 0; i < imageFileNameArr.length; i++){
-            AlbumRecyclerItem item = new AlbumRecyclerItem(GalleryDir + imageFileNameArr[i]);
-            mMyData.add(item);
-        }
+       for(int i = 0; i < imageFileNameArr.length; i++){
+           AlbumRecyclerItem item = new AlbumRecyclerItem(GalleryDir + imageFileNameArr[i]);
+           mMyData.add(item);
+       }
     }
 
     private String getDirectoryPath(){
@@ -256,65 +256,72 @@ public class TabFragment2 extends Fragment {
             return;
         }
 
-        if (requestCode == PICK_FROM_ALBUM) {
-            if (data == null) {
-                return;
-            }
-            try {
-                File albumFile = null;
-                albumFile = createImageFile();
-                photoURI = data.getData();
-                albumURI = Uri.fromFile(albumFile);
-                cropImage();
-            } catch (IOException e) {
-                Toast.makeText(getContext(), "앨범에서 부르기가 실패되었습니다.", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-        } else if (requestCode == PICK_FROM_CAMERA) {
-            File file = new File(mCurrentPath);
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getApplication().getContentResolver(), Uri.fromFile(file));
-                if(bitmap != null){
-                    ExifInterface exif = null;
-                    try {
-                        exif = new ExifInterface(mCurrentPath);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    int exifOrientation;
-                    int exifDegree = 0;
-
-                    if (exif != null) {
-                        exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                        exifDegree = exifOrientationToDegrees(exifOrientation);
-                    }
-
-                    Bitmap rotate_bitmap = rotate(bitmap, exifDegree);
-                    File savepath = new File(mCurrentPath);
-                    FileOutputStream fos = new FileOutputStream(savepath);
-                    rotate_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
-                    fos.close();
+        else {
+            if (requestCode == PICK_FROM_ALBUM) {
+                if (data == null) {
+                    return;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            gallery_refresh();
+                try {
+                    File albumFile = null;
+                    albumFile = createImageFile();
+                    photoURI = data.getData();
+                    albumURI = Uri.fromFile(albumFile);
+                    cropImage();
+                } catch (IOException e) {
+                    Toast.makeText(getContext(), "앨범에서 부르기가 실패되었습니다.", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            } else if (requestCode == PICK_FROM_CAMERA) {
+                File file = new File(mCurrentPath);
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getApplication().getContentResolver(), Uri.fromFile(file));
+                    if (bitmap != null) {
+                        ExifInterface exif = null;
+                        try {
+                            exif = new ExifInterface(mCurrentPath);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-        } else if (requestCode == CROP_FROM_CAMERA) {
-            gallery_refresh();
+                        int exifOrientation;
+                        int exifDegree = 0;
+
+                        if (exif != null) {
+                            exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                            exifDegree = exifOrientationToDegrees(exifOrientation);
+                        }
+
+                        Bitmap rotate_bitmap = rotate(bitmap, exifDegree);
+                        File savepath = new File(mCurrentPath);
+                        FileOutputStream fos = new FileOutputStream(savepath);
+                        rotate_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+
+                        fos.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                gallery_update(true);
+
+            } else if (requestCode == CROP_FROM_CAMERA) {
+                gallery_update(true);
+            }
+            mAdapter.notifyDataSetChanged();
         }
     }
 
-    //갤러리 리프레시 해서 목록을 띄워줌(갤러리에)
-    private void gallery_refresh() {
+    //갤러리에 사진 추가시 해서 목록을 띄워줌(갤러리에)
+    private void gallery_update(boolean addphoto) {
         Intent scan_intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPath);
         Uri conURI = Uri.fromFile(f);
         scan_intent.setData(conURI);
         getActivity().sendBroadcast(scan_intent);
+        if(addphoto) {
+            AlbumRecyclerItem item = new AlbumRecyclerItem(mCurrentPath);
+            mMyData.add(item);
+        }
     }
 
     //앨범에서 사진을 불러와 crop할때 자르기.
@@ -353,15 +360,15 @@ public class TabFragment2 extends Fragment {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    private void getInfo(int position){
+    private void getInfo(final int position){
         final String getPath = mMyData.get(position).getitemPath();
 
         imageView.setVisibility(VISIBLE);
-        textView.setVisibility(VISIBLE);
+        //textView.setVisibility(VISIBLE);
         btn_back.setVisibility(VISIBLE);
 
         imageView.setImageURI(Uri.parse((getPath)));
-        textView.setText(getName(getPath));
+        //textView.setText(getName(getPath));
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -374,11 +381,13 @@ public class TabFragment2 extends Fragment {
                     btn_delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            getDelete(getPath);
+                            getDelete(getPath, position);
                             imageView.setVisibility(View.GONE);
-                            textView.setVisibility(View.GONE);
                             btn_back.setVisibility(View.GONE);
                             btn_delete.setVisibility(View.GONE);
+                            btnAlbum.show();
+                            btnCamera.show();
+                            btnReset.show();
                         }
                     });
                 }
@@ -389,20 +398,23 @@ public class TabFragment2 extends Fragment {
             @Override
             public void onClick(View view) {
                 imageView.setVisibility(View.GONE);
-                textView.setVisibility(View.GONE);
                 btn_back.setVisibility(View.GONE);
                 btn_delete.setVisibility(View.GONE);
+                btnAlbum.show();
+                btnCamera.show();
+                btnReset.show();
             }
         });
     }
 
-    private void getDelete(String getPath){
+    private void getDelete(String getPath, int position){
         File file = new File(getPath);
         file.delete();
         mCurrentPath = getPath;
-        gallery_refresh();
+        gallery_update(false);
+        mMyData.remove(position);
+        mAdapter.notifyItemRemoved(position);
         Toast.makeText(getContext(),"사진 삭제 완료", Toast.LENGTH_SHORT).show();
-        onResume();
     }
 
     private void resetGallery(){
@@ -412,15 +424,11 @@ public class TabFragment2 extends Fragment {
             file = new File(filePath);
             file.delete();
             mCurrentPath = filePath;
-            gallery_refresh();
+            gallery_update(false);
         }
+        mMyData.clear();
+        mAdapter.notifyDataSetChanged();
         Toast.makeText(getContext(),"갤러리 초기화", Toast.LENGTH_SHORT).show();
-        onResume();
-    }
-
-    private String getName(String getPath){
-        String tmp[] = getPath.split("/");
-        return tmp[tmp.length - 1];
     }
 }
 
