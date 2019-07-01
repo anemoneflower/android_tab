@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.IBinder;
@@ -28,11 +29,22 @@ public class FloatingViewService extends Service implements View.OnClickListener
     private Button button;
     private TextView textView;
     private Boolean ismoved = false;
+    private Integer bg_color;
 
     SharedPreferences pref;
 
     public FloatingViewService() {
     }
+
+//    @Override
+//    public int onStartCommand(Intent intent, int flags, int stratId){
+//        bg_color = intent.getStringExtra("bgcolor");
+//        Log.d("COLOR", "Getbgcolor" + bg_color);
+//        Log.d("COLOR", bg_color);
+//        Log.d("COLOR", String.valueOf(Integer.parseInt(bg_color)));
+//        expandedView.setBackgroundColor(Integer.parseInt(bg_color));
+//        return stratId;
+//    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -88,6 +100,12 @@ public class FloatingViewService extends Service implements View.OnClickListener
         //getting the collapsed and expanded view from the floating view
         collapsedView = mFloatingView.findViewById(R.id.layoutCollapsed);
         expandedView = mFloatingView.findViewById(R.id.layoutExpanded);
+
+        bg_color = pref.getInt("bg_color", -1);
+        if(bg_color != -1) {
+            expandedView.setBackgroundColor(bg_color);
+        }
+
 
         //adding click listener to close button and expanded view
         mFloatingView.findViewById(R.id.buttonClose).setOnClickListener(this);

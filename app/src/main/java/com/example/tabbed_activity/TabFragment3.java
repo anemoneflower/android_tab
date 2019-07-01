@@ -1,9 +1,12 @@
 package com.example.tabbed_activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +24,8 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import top.defaults.colorpicker.ColorPickerPopup;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class TabFragment3 extends Fragment {
@@ -35,6 +40,8 @@ public class TabFragment3 extends Fragment {
 
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+
+//    private String expanded_bgcolor = String.valueOf(Color.parseColor("#F5F5ABC3"));
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState){
@@ -69,6 +76,8 @@ public class TabFragment3 extends Fragment {
         }
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_3, container, false);
@@ -78,10 +87,14 @@ public class TabFragment3 extends Fragment {
             @Override
             public void onClick(View view) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    getActivity().startService(new Intent(getContext(), FloatingViewService.class));
+                    Intent intent = new Intent(getContext(), FloatingViewService.class);
+//                    intent.putExtra("bgcolor", expanded_bgcolor);
+                    getActivity().startService(intent);
                     getActivity().finish();
                 } else if (Settings.canDrawOverlays(getActivity())) {
-                    getActivity().startService(new Intent(getContext(), FloatingViewService.class));
+                    Intent intent = new Intent(getContext(), FloatingViewService.class);
+//                    intent.putExtra("bgcolor", expanded_bgcolor);
+                    getActivity().startService(intent);
                     getActivity().finish();
                 }
                 else {
@@ -91,8 +104,36 @@ public class TabFragment3 extends Fragment {
             }
         });
 
+        view.findViewById(R.id.overlay_on_button_custom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                int initial_color = pref.getInt("bg_color", -1);
+                if(initial_color == -1) initial_color = Color.parseColor("#F5F5ABC3");
+                new ColorPickerPopup.Builder(getContext())
+                        .initialColor(initial_color) // Set initial color
+                        .enableBrightness(true) // Enable brightness slider or not
+                        .enableAlpha(true) // Enable alpha slider or not
+                        .okTitle("Choose")
+                        .cancelTitle("Cancel")
+                        .showIndicator(true)
+                        .showValue(true)
+                        .build()
+                        .show(view, new ColorPickerPopup.ColorPickerObserver() {
+                            @Override
+                            public void onColorPicked(int color) {
+                                editor.putInt("bg_color", color);
+                                editor.apply();
+                            }
+
+                        });
+
+            }
+        });
+
+
         return view;
     }
+
 
     public void spinner_initialize(){
         ArrayList<Spinner> spinner_list = new ArrayList<>();
