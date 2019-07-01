@@ -1,6 +1,8 @@
 package com.example.tabbed_activity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,8 +47,12 @@ public class RecyclerImageAdapter extends RecyclerView.Adapter<RecyclerImageAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         AlbumRecyclerItem item = mData.get(position);
-        Uri photoUri = Uri.parse(item.getitemPath());
-        holder.photo.setImageURI(photoUri);
+        //Uri photoUri = Uri.parse(item.getitemPath());
+        //holder.photo.setImageURI(photoUri);
+        BitmapFactory.Options bo = new BitmapFactory.Options();
+        bo.inSampleSize = 4;
+        Bitmap bitmap = BitmapFactory.decodeFile(item.getitemPath(), bo);
+        holder.photo.setImageBitmap(bitmap);
     }
 
     // getItemCount() - 전체 데이터 갯수 리턴.

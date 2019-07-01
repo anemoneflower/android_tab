@@ -5,24 +5,23 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
+import android.widget.Toast;
 
 import java.util.Arrays;
-
-import static android.content.Context.WINDOW_SERVICE;
 
 public class FloatingViewService extends Service implements View.OnClickListener {
 
@@ -34,11 +33,22 @@ public class FloatingViewService extends Service implements View.OnClickListener
     private Button button;
     private TextView textView;
     private Boolean ismoved = false;
+    private Integer bg_color;
 
     SharedPreferences pref;
 
     public FloatingViewService() {
     }
+
+//    @Override
+//    public int onStartCommand(Intent intent, int flags, int stratId){
+//        bg_color = intent.getStringExtra("bgcolor");
+//        Log.d("COLOR", "Getbgcolor" + bg_color);
+//        Log.d("COLOR", bg_color);
+//        Log.d("COLOR", String.valueOf(Integer.parseInt(bg_color)));
+//        expandedView.setBackgroundColor(Integer.parseInt(bg_color));
+//        return stratId;
+//    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -49,7 +59,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
     int[] btnArr = {R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9};
     int[] txtviewArr = {R.id.buttontextview1, R.id.buttontextview2, R.id.buttontextview3, R.id.buttontextview4, R.id.buttontextview5, R.id.buttontextview6, R.id.buttontextview7, R.id.buttontextview8, R.id.buttontextview9};
 
-    //    String[] prefAppNameArr = {"1_name", "2_name", "3_name", "4_name", "5_name", "6_name", "7_name", "8_name", "9_name"};
     @Override
     public void onCreate() {
         super.onCreate();
@@ -87,7 +96,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-
         //getting windows services and adding the floating view to it
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mWindowManager.addView(mFloatingView, params);
@@ -100,6 +108,12 @@ public class FloatingViewService extends Service implements View.OnClickListener
         //adding click listener to close button and expanded view
         mFloatingView.findViewById(R.id.buttonClose).setOnClickListener(this);
         expandedView.setOnClickListener(this);
+
+        bg_color = pref.getInt("bg_color", -1);
+        if(bg_color != -1) {
+            GradientDrawable bg = (GradientDrawable) expandedView.getBackground();
+            bg.setColor(bg_color);
+        }
 
         //adding an touchlistener to make drag movement of the floating widget
         mFloatingView.findViewById(R.id.relativeLayoutParent).setOnTouchListener(new View.OnTouchListener() {
@@ -146,32 +160,30 @@ public class FloatingViewService extends Service implements View.OnClickListener
         });
     }
 
+    private int findBtnIdx(int btnid){
+        for(int i=0; i<btnArr.length; i++){
+            if(btnid == btnArr[i])
+                return i;
+        }
+        return -1;
+    }
+
     Button.OnClickListener listener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            int btnIdx = Arrays.asList(btnArr).indexOf(view.getId());
-            String id = pref.getString(String.valueOf(btnIdx), null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
-            Intent myintent = getPackageManager().getLaunchIntentForPackage(id);
-
-            startActivity(myintent);
-
-            collapsedView.setVisibility(View.VISIBLE);
-            expandedView.setVisibility(View.GONE);
-//
-//            switch (view.getId()) {
-//                case R.id.button1:
-//                    String id = pref.getString("1", null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
-//                    Intent myintent = getPackageManager().getLaunchIntentForPackage(id);
-//
-//                    startActivity(myintent);
-//
-//                    collapsedView.setVisibility(View.VISIBLE);
-//                    expandedView.setVisibility(View.GONE);
-//                    break;
-//            }
+            int btnIdx = findBtnIdx(view.getId());
+            String id = pref.getString(String.valueOf(btnIdx+1), null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
+            if(id!=null) {
+                Intent myintent = getPackageManager().getLaunchIntentForPackage(id);
+                startActivity(myintent);
+                collapsedView.setVisibility(View.VISIBLE);
+                expandedView.setVisibility(View.GONE);
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "퀵메뉴를 지정해주세요", Toast.LENGTH_SHORT).show();
+            }
         }
     };
-
 
     @Override
     public void onDestroy() {
