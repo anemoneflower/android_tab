@@ -7,22 +7,14 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.util.Arrays;
-
-import static android.content.Context.WINDOW_SERVICE;
 
 public class FloatingViewService extends Service implements View.OnClickListener {
 
@@ -49,7 +41,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
     int[] btnArr = {R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9};
     int[] txtviewArr = {R.id.buttontextview1, R.id.buttontextview2, R.id.buttontextview3, R.id.buttontextview4, R.id.buttontextview5, R.id.buttontextview6, R.id.buttontextview7, R.id.buttontextview8, R.id.buttontextview9};
 
-    //    String[] prefAppNameArr = {"1_name", "2_name", "3_name", "4_name", "5_name", "6_name", "7_name", "8_name", "9_name"};
     @Override
     public void onCreate() {
         super.onCreate();
@@ -157,18 +148,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
 
             collapsedView.setVisibility(View.VISIBLE);
             expandedView.setVisibility(View.GONE);
-//
-//            switch (view.getId()) {
-//                case R.id.button1:
-//                    String id = pref.getString("1", null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
-//                    Intent myintent = getPackageManager().getLaunchIntentForPackage(id);
-//
-//                    startActivity(myintent);
-//
-//                    collapsedView.setVisibility(View.VISIBLE);
-//                    expandedView.setVisibility(View.GONE);
-//                    break;
-//            }
         }
     };
 

@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-
 public class TabFragment1 extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerImageTextAdapter mAdapter;
@@ -41,7 +39,6 @@ public class TabFragment1 extends Fragment {
     private View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("DEBUGDEBUG", "OCV");
         view = inflater.inflate(R.layout.fragment_1, container, false);
         return view;
     }
@@ -87,8 +84,6 @@ public class TabFragment1 extends Fragment {
         for (int i=0; i<mMyData.size(); i++){
             contactItem = mMyData.get(i);
             Drawable drawable;
-            Log.d("CONTACTITEM", String.valueOf(contactItem.getPersonID()) + ", " + String.valueOf(contactItem.getIconID()) + ", " +contactItem.getName());
-
             Bitmap bm = loadContactPhoto(getActivity().getContentResolver(), contactItem.getPersonID(), contactItem.getIconID());
             if(bm == null)
                 drawable = getResources().getDrawable(R.drawable.default_icon);
@@ -127,13 +122,10 @@ public class TabFragment1 extends Fragment {
     }
 
     public Bitmap loadContactPhoto(ContentResolver cr, long id, long photo_id){
-        Log.d("LOADPHOTO", String.valueOf(id) + ", " + String.valueOf(photo_id));
         Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(cr, uri);
         if(input != null)
             return resizingBitmap(BitmapFactory.decodeStream(input));
-        else
-            Log.d("PHOTO", "first try failed to load photo");
 
         byte[] photoBytes = null;
         Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photo_id);
@@ -149,8 +141,7 @@ public class TabFragment1 extends Fragment {
 
         if(photoBytes != null)
             return resizingBitmap(BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.length));
-        else
-            Log.d("PHOTO", "second try also failed");
+
         return null;
     }
 
@@ -204,8 +195,4 @@ public class TabFragment1 extends Fragment {
 
         return obj;
     }
-
-
-
-
 }
