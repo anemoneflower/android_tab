@@ -3,5 +3,8 @@
     <item android:drawable="@color/colorGrey" />
     <item
         android:gravity="center"
-        android:drawable="@drawable/icon"/>
+        android:drawable="@drawable/icon"
+        android:height ="250dp"
+        android:width = "250dp"
+        />
 </layer-list>
