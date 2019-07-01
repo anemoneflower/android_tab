@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.Arrays;
 
 public class FloatingViewService extends Service implements View.OnClickListener {
@@ -78,7 +80,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-
         //getting windows services and adding the floating view to it
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mWindowManager.addView(mFloatingView, params);
@@ -137,20 +138,30 @@ public class FloatingViewService extends Service implements View.OnClickListener
         });
     }
 
+    private int findBtnIdx(int btnid){
+        for(int i=0; i<btnArr.length; i++){
+            if(btnid == btnArr[i])
+                return i;
+        }
+        return -1;
+    }
+
     Button.OnClickListener listener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            int btnIdx = Arrays.asList(btnArr).indexOf(view.getId());
-            String id = pref.getString(String.valueOf(btnIdx), null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
-            Intent myintent = getPackageManager().getLaunchIntentForPackage(id);
-
-            startActivity(myintent);
-
-            collapsedView.setVisibility(View.VISIBLE);
-            expandedView.setVisibility(View.GONE);
+            int btnIdx = findBtnIdx(view.getId());
+            String id = pref.getString(String.valueOf(btnIdx+1), null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
+            if(id!=null) {
+                Intent myintent = getPackageManager().getLaunchIntentForPackage(id);
+                startActivity(myintent);
+                collapsedView.setVisibility(View.VISIBLE);
+                expandedView.setVisibility(View.GONE);
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "퀵메뉴를 지정해주세요", Toast.LENGTH_SHORT).show();
+            }
         }
     };
-
 
     @Override
     public void onDestroy() {
