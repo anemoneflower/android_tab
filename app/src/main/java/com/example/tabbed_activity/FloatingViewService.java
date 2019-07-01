@@ -7,8 +7,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -101,15 +105,15 @@ public class FloatingViewService extends Service implements View.OnClickListener
         collapsedView = mFloatingView.findViewById(R.id.layoutCollapsed);
         expandedView = mFloatingView.findViewById(R.id.layoutExpanded);
 
-        bg_color = pref.getInt("bg_color", -1);
-        if(bg_color != -1) {
-            expandedView.setBackgroundColor(bg_color);
-        }
-
-
         //adding click listener to close button and expanded view
         mFloatingView.findViewById(R.id.buttonClose).setOnClickListener(this);
         expandedView.setOnClickListener(this);
+
+        bg_color = pref.getInt("bg_color", -1);
+        if(bg_color != -1) {
+            GradientDrawable bg = (GradientDrawable) expandedView.getBackground();
+            bg.setColor(bg_color);
+        }
 
         //adding an touchlistener to make drag movement of the floating widget
         mFloatingView.findViewById(R.id.relativeLayoutParent).setOnTouchListener(new View.OnTouchListener() {
