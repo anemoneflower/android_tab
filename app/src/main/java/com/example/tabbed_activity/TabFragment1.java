@@ -43,16 +43,6 @@ public class TabFragment1 extends Fragment {
         return view;
     }
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initDataset();
-    }
-    @Override
     public void onResume(){
         super.onResume();
         initDataset();
